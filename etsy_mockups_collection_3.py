@@ -10,7 +10,8 @@ def export_etsy_mockup_collections_3_phones(path):
     # load mockup
     mockup_path = r"D:\Portfolio\Etsy\Product\Phone\MockUp\3\mockup_phones.xcf"
     image = pdb.gimp_xcf_load(0, mockup_path, mockup_path)
-    pdb.gimp_display_new(image)
+    #pdb.gimp_display_new(image)
+
 
 
     # load phone mockups
@@ -57,7 +58,7 @@ def export_etsy_mockup_collections_3_phones(path):
     pdb.gimp_edit_copy(target_shadow_layer)
     floating_layer = pdb.gimp_edit_paste(target_layer_collection, True)
     pdb.gimp_floating_sel_anchor(floating_layer)
-
+    
     
     
     # create cut outs of phones
@@ -109,8 +110,6 @@ def export_etsy_mockup_collections_3_phones(path):
         # anchor & move to position
         pdb.gimp_floating_sel_anchor(floating_layer)
         pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, target_phone_layer_cutout)
-
-        pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, target_phone_layer_cutout)
         pdb.gimp_item_transform_translate(target_phone_layer_cutout, translationXs.get(i), translationYs.get(i))
     
 
@@ -156,7 +155,7 @@ def export_etsy_mockup_collections_3_showcases(path):
         6:"pixel8pro_3.jpg", 7:"galaxys24ultra_3.jpg", 8:"iphone15promax_3.jpg",
     }
     for i in range(9):
-        
+
         # add mockup to display
         phone_mockup_path = path + "\\" + phone_layer_names.get(i)
         layer = pdb.gimp_file_load_layer(image, phone_mockup_path)
@@ -175,11 +174,31 @@ def export_etsy_mockup_collections_3_showcases(path):
 
 
     # create cut outs of phone sides
-    translationXs = {0:-276, 1:-1, 2:432}
-    translationYs = {0:-18, 1:42, 2:102}
-    widths = {0:407, 1:419, 2:422}
-    heights = {0:831, 1:831, 2:830}
-    cutout_layer_names = {0:"cutout pixel8pro", 1:"cutout galaxys24ultra", 2:"cutout iphone15promax"}
+    translationXs = {
+        0:-276, 
+        1:-1, 
+        2:432
+    }
+    translationYs = {
+        0:-18, 
+        1:42, 
+        2:102
+    }
+    widths = {
+        0:407, 
+        1:419, 
+        2:422
+    }
+    heights = {
+        0:831, 
+        1:831, 
+        2:830
+    }
+    cutout_layer_names = {
+        0:"cutout pixel8pro", 
+        1:"cutout galaxys24ultra", 
+        2:"cutout iphone15promax"
+    }
     for showcaseId in range(3):
 
         # get background

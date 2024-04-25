@@ -9,26 +9,27 @@ def export_etsy_mockup_collections_5_phones(path):
     # load mockup
     mockup_path = r"D:\Portfolio\Etsy\Product\Phone\MockUp\5\mockup_phones.xcf"
     image = pdb.gimp_xcf_load(0, mockup_path, mockup_path)
+    #pdb.gimp_display_new(image)
 
 
 
     # load iphone mockups
-    phone_layer_names = [
-        "iphone13_1.jpg",       # left
-        "galaxys24ultra_2.jpg", # center left
-        "iphone15promax_3.jpg", # center
-        "pixel8pro_4.jpg",      # center right
-        "iphone14promax_5.jpg"  # right
-    ]
-    for phone_layer_name in phone_layer_names:
+    phone_layer_names = {
+        0:"iphone13promax_1.jpg",  # left
+        1:"galaxys24ultra_2.jpg", # center left
+        2:"iphone15promax_3.jpg", # center
+        3:"pixel8pro_4.jpg",      # center right
+        4:"iphone14promax_5.jpg"  # right
+    }
+    for i in range(5):
         
         # add mockup to display
-        phone_mockup_path = path + "\\" + phone_layer_name
+        phone_mockup_path = path + "\\" + phone_layer_names.get(i)
         layer = pdb.gimp_file_load_layer(image, phone_mockup_path)
         pdb.gimp_image_insert_layer(image, layer, None, -1)
 
         # change name
-        target_phone_layer_name = phone_layer_name + " base"
+        target_phone_layer_name = "base " + phone_layer_names.get(i)
         pdb.gimp_item_set_name(layer, target_phone_layer_name)
 
 
@@ -38,7 +39,7 @@ def export_etsy_mockup_collections_5_phones(path):
     target_layer_collection = pdb.gimp_image_get_layer_by_name(image, collection_layer_name)
 
 
-
+    
     # get background
     background_layer = pdb.gimp_image_get_layer_by_name(image, "background")
     pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, background_layer)
@@ -46,86 +47,109 @@ def export_etsy_mockup_collections_5_phones(path):
 
     # copy & paste the background
     pdb.gimp_edit_copy(background_layer)
-    floating_iphone_layer = pdb.gimp_edit_paste(target_layer_collection, True)
-    pdb.gimp_floating_sel_anchor(floating_iphone_layer)
+    floating_layer = pdb.gimp_edit_paste(target_layer_collection, True)
+    pdb.gimp_floating_sel_anchor(floating_layer)
 
 
 
-    # copy numbers & shadows
-    index = 1
+    # copy shadow
+    target_shadow_layer = pdb.gimp_image_get_layer_by_name(image, "shadow")
+    pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, target_shadow_layer)
+
+    # copy & paste the shadow
+    pdb.gimp_edit_copy(target_shadow_layer)
+    floating_layer = pdb.gimp_edit_paste(target_layer_collection, True)
+    pdb.gimp_floating_sel_anchor(floating_layer)
+    
+    
+    
+    # create cut outs of phones
+    translationXs = {
+        0:-269,
+        1:-212,
+        2:156,
+        3:210,
+        4:556,
+    }
+    translationYs = {
+        0:0,
+        1:1,
+        2:1,
+        3:0,
+        4:-1,
+    }
+    widths = {
+        0:357,
+        1:377,
+        2:405,
+        3:368,
+        4:358,
+    }
+    heights = {
+        0:700,
+        1:750,
+        2:800,
+        3:750,
+        4:700,
+    }
+    cutout_layer_names = {
+        0:"cutout iphone13promax",
+        1:"cutout galaxys24ultra",
+        2:"cutout iphone15promax",
+        3:"cutout pixel8pro",
+        4:"cutout iphone14promax"
+    }
     for i in range(5):
-        # get shadow
-        target_shadow_layer = pdb.gimp_image_get_layer_by_name(image, "shadow " + str(index))
-        pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, target_shadow_layer)
-    
-        # copy & paste the shadow
-        pdb.gimp_edit_copy(target_shadow_layer)
-        floating_iphone_layer = pdb.gimp_edit_paste(target_layer_collection, True)
-        pdb.gimp_floating_sel_anchor(floating_iphone_layer)
-
-        index += 1
-    
-    
-    
-    # create cut outs of iphone sides
-    mockup_index = 1
-    for iphone_layer_name in iphone_layer_names:
     
         # get cutout selection
-        cutout_layer = pdb.gimp_image_get_layer_by_name(image, "cutout")
+        cutout_layer = pdb.gimp_image_get_layer_by_name(image, cutout_layer_names.get(i))
         pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, cutout_layer)
         
         # get layer
-        iphone_layer = pdb.gimp_image_get_layer_by_name(image, iphone_layer_name + " base")
-        cutout_layer_name = iphone_layer_name + " cutout"
-        target_iphone_layer_cutout = pdb.gimp_image_get_layer_by_name(image, cutout_layer_name)
+        phone_layer = pdb.gimp_image_get_layer_by_name(image, "base " + phone_layer_names.get(i))
+        cutout_layer_name = "cutout " + phone_layer_names.get(i)
+        target_phone_layer_cutout = pdb.gimp_image_get_layer_by_name(image, cutout_layer_name)
         
         # copy & paste the cutout
-        pdb.gimp_edit_copy(iphone_layer)
-        floating_iphone_layer = pdb.gimp_edit_paste(target_iphone_layer_cutout, True)
+        pdb.gimp_edit_copy(phone_layer)
+        floating_layer = pdb.gimp_edit_paste(target_phone_layer_cutout, True)
         
+        # scale layer to appropriate size
+        width = widths.get(i)
+        height = heights.get(i)
+        pdb.gimp_layer_scale(floating_layer, width, height, True)
+
         # anchor & move to position
-        pdb.gimp_floating_sel_anchor(floating_iphone_layer)
-        pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, target_iphone_layer_cutout)
-    
-        # apply layer transformations
-        # 1 = -450
-        # 2 = -92
-        # 3 = 267
-        # 4 = 625
-        # 5 = 983
-        translations = {1:-450, 2:-104, 3:267, 4:637, 5:983}
-        scales = {1:0.7, 2:0.75, 3:0.8, 4:0.75, 5:0.7}
-    
-        pdb.gimp_item_transform_translate(target_iphone_layer_cutout, translations.get(mockup_index), 0)
-    
-        width = 800
-        height = 1573
-        scale = scales.get(mockup_index)
-        pdb.gimp_layer_scale(target_iphone_layer_cutout, width * scale, height * scale, True)
-    
-        mockup_index += 1
+        pdb.gimp_floating_sel_anchor(floating_layer)
+        pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, target_phone_layer_cutout)
+        pdb.gimp_item_transform_translate(target_phone_layer_cutout, translationXs.get(i), translationYs.get(i))
     
     
     
     # move cutouts to export layer
-    iphone_layer_names_sorted = ["iphone1.jpg", "iphone5.jpg", "iphone4.jpg", "iphone2.jpg", "iphone3.jpg"]
-    for iphone_layer_name in iphone_layer_names_sorted:
+    phone_layer_names_sorted = {
+        0:"iphone13promax_1.jpg", # left
+        1:"galaxys24ultra_2.jpg", # center left
+        2:"iphone14promax_5.jpg", # right
+        3:"pixel8pro_4.jpg",      # center right
+        4:"iphone15promax_3.jpg", # center
+    }
+    for i in range(5):
         
         # get new cutout back layer
-        cutout_layer_name = iphone_layer_name + " cutout"
+        cutout_layer_name = "cutout " + phone_layer_names_sorted.get(i)
         cutout_layer = pdb.gimp_image_get_layer_by_name(image, cutout_layer_name)
         pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, cutout_layer)
     
         # copy & paste the cutout
         pdb.gimp_edit_copy(cutout_layer)
-        floating_iphone_layer = pdb.gimp_edit_paste(target_layer_collection, True)
-        pdb.gimp_floating_sel_anchor(floating_iphone_layer)
+        floating_layer = pdb.gimp_edit_paste(target_layer_collection, True)
+        pdb.gimp_floating_sel_anchor(floating_layer)
     
     
     
     # export out final image
-    file_name = path + "\\_collection1.png"
+    file_name = path + "\\_cover.png"
     pdb.file_png_save_defaults(image, target_layer_collection, file_name, file_name)
 
 
@@ -135,6 +159,7 @@ def export_etsy_mockup_collections_5_showcases(path):
     # load mockup
     mockup_path = r"D:\Portfolio\Etsy\Product\Phone\MockUp\5\mockup_showcases.xcf"
     image = pdb.gimp_xcf_load(0, mockup_path, mockup_path)
+    #pdb.gimp_display_new(image)
 
 
 
@@ -154,7 +179,7 @@ def export_etsy_mockup_collections_5_showcases(path):
         pdb.gimp_image_insert_layer(image, layer, None, -1)
 
         # change name
-        target_phone_layer_name = phone_layer_names.get(i) + " base"
+        target_phone_layer_name = "base " + phone_layer_names.get(i)
         pdb.gimp_item_set_name(layer, target_phone_layer_name)
 
 
@@ -166,11 +191,31 @@ def export_etsy_mockup_collections_5_showcases(path):
 
 
     # create cut outs of phone sides
-    translationXs = {0:-276, 1:-1, 2:432}
-    translationYs = {0:-18, 1:42, 2:102}
-    widths = {0:407, 1:419, 2:422}
-    heights = {0:831, 1:831, 2:830}
-    cutout_layer_names = {0:"cutout pixel8pro", 1:"cutout galaxys24ultra", 2:"cutout iphone15promax"}
+    translationXs = {
+        0:-276, 
+        1:-1, 
+        2:432
+    }
+    translationYs = {
+        0:-18, 
+        1:42, 
+        2:102
+    }
+    widths = {
+        0:407, 
+        1:419, 
+        2:422
+    }
+    heights = {
+        0:831, 
+        1:831, 
+        2:830
+    }
+    cutout_layer_names = {
+        0:"cutout pixel8pro", 
+        1:"cutout galaxys24ultra", 
+        2:"cutout iphone15promax"
+    }
     for showcaseId in range(5):
 
         # get background
@@ -258,8 +303,8 @@ def export_etsy_mockup_collections_5_showcases(path):
             pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, cutout_layer)
 
             # get layer
-            phone_layer = pdb.gimp_image_get_layer_by_name(image, phone_layer_names.get(index) + " base")
-            cutout_layer_name = phone_layer_names.get(index) + " cutout"
+            phone_layer = pdb.gimp_image_get_layer_by_name(image, "base " + phone_layer_names.get(index))
+            cutout_layer_name = "cutout " + phone_layer_names.get(index)
             target_phone_layer_cutout = pdb.gimp_image_get_layer_by_name(image, cutout_layer_name)
 
             # copy & paste the cutout
@@ -300,7 +345,7 @@ def export_etsy_mockup_collections_5_showcases(path):
  
 
 def export_etsy_mockup_collections_5(path):
-    #export_etsy_mockup_collections_5_phones(path)
+    export_etsy_mockup_collections_5_phones(path)
     export_etsy_mockup_collections_5_showcases(path)
 
 
