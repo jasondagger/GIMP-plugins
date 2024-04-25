@@ -15,7 +15,7 @@ def export_etsy_mockup_collections_5_phones(path):
 
     # load iphone mockups
     phone_layer_names = {
-        0:"iphone13promax_1.jpg",  # left
+        0:"iphone13promax_1.jpg", # left
         1:"galaxys24ultra_2.jpg", # center left
         2:"iphone15promax_3.jpg", # center
         3:"pixel8pro_4.jpg",      # center right
