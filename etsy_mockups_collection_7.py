@@ -66,58 +66,58 @@ def export_etsy_mockup_collections_7_phones(path):
     
     
     translationXs = {
-        0:0, 
-        1:0, 
-        2:0,
-        3:0,
-        4:0,
-        5:0,
-        6:0,
+        0:517,
+        1:119,
+        2:-119,
+        3:-206,
+        4:373,
+        5:155,
+        6:-78,
     }
     translationYs = {
-        0:0, 
-        1:0, 
-        2:0,
-        3:0,
-        4:0,
-        5:0,
-        6:0,
+        0:173,
+        1:145,
+        2:144,
+        3:181,
+        4:-155,
+        5:-171,
+        6:-153,
     }
     widths = {
-        0:0, 
-        1:0, 
-        2:0,
-        3:0,
-        4:0,
-        5:0,
-        6:0,
+        0:354,
+        1:353,
+        2:343,
+        3:358,
+        4:357,
+        5:354,
+        6:343,
     }
     heights = {
-        0:0, 
-        1:0, 
-        2:0,
-        3:0,
-        4:0,
-        5:0,
-        6:0,
+        0:700,
+        1:700,
+        2:700,
+        3:700,
+        4:700,
+        5:700,
+        6:700,
     }
     rotations = {
-        0:0, 
-        1:0, 
-        2:0,
-        3:0,
-        4:0,
+        0:12,
+        1:4,
+        2:-4,
+        3:-12,
+        4:8,
         5:0,
-        6:0,
+        6:-8,
     }
     cutout_layer_names = {
         0:"cutout iphone15promax", 
         1:"cutout galaxys24ultra", 
         2:"cutout pixel8pro",
         3:"cutout iphone14promax",
-        6:"cutout iphone13promax",
-        4:"cutout galaxys23ultra",
-        5:"cutout pixel7",
+        4:"cutout iphone13promax",
+        5:"cutout galaxys23ultra",
+        6:"cutout pixel7",
     }
     for i in range(7):
 
@@ -129,11 +129,11 @@ def export_etsy_mockup_collections_7_phones(path):
         phone_layer = pdb.gimp_image_get_layer_by_name(image, "base " + phone_layer_names.get(i))
         cutout_layer_name = "cutout " + phone_layer_names.get(i)
         target_phone_layer_cutout = pdb.gimp_image_get_layer_by_name(image, cutout_layer_name)
-
+        
         # copy & paste the cutout
         pdb.gimp_edit_copy(phone_layer)
         floating_layer = pdb.gimp_edit_paste(target_phone_layer_cutout, True)
-    
+
         # scale layer to appropriate size
         width = widths.get(i)
         height = heights.get(i)
@@ -331,7 +331,7 @@ def export_etsy_mockup_collections_7_showcases(path):
             pdb.gimp_image_select_item(image, CHANNEL_OP_REPLACE, cutout_layer)
 
             # get layer
-            phone_layer = pdb.gimp_image_get_layer_by_name("base " + image, phone_layer_names.get(index))
+            phone_layer = pdb.gimp_image_get_layer_by_name(image, "base " + phone_layer_names.get(index))
             cutout_layer_name = "cutout " + phone_layer_names.get(index)
             target_phone_layer_cutout = pdb.gimp_image_get_layer_by_name(image, cutout_layer_name)
 
